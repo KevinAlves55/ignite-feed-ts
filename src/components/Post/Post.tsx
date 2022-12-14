@@ -5,9 +5,22 @@ import { Comment } from "../Comment/Comment";
 import { Avatar } from "../Avatar/Avatar";
 
 import Styles from "./Post.module.css";
-import { useState } from "react";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 
-export const Post = ({ author, publishedAt, content}) => {
+export interface IPostProps {
+  author: {
+    avatarUrl: string;
+    name: string;
+    role: string
+  },
+  content: {
+    type: "paragraph" | "link";
+    content: string;
+  }[],
+  publishedAt: Date;
+}
+
+export const Post: React.FC<IPostProps> = ({ author, publishedAt, content }) => {
   const [comments, setComments] = useState(["Que post bacana hein 🚀"]);
   const [newCommitText, setNewCommitText] = useState("");
 
@@ -20,19 +33,23 @@ export const Post = ({ author, publishedAt, content}) => {
     addSuffix: true
   });
 
-  const handleCreateNewCommit = () => {
+  const handleCreateNewCommit = (event: FormEvent) => {
     event.preventDefault();
 
     setComments([...comments, newCommitText]);
     setNewCommitText("");
   };
 
-  const handleNewCommitChange = () => {
+  const handleNewCommitChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     event.target.setCustomValidity("");
     setNewCommitText(event.target.value);
   };
 
-  const deleteCommit = (commentToDelete) => {
+  const handleNewCommitInvalid = (event: InvalidEvent<HTMLTextAreaElement>) => {
+    event.target.setCustomValidity("Esse campo é obrigatório");
+  };
+
+  const deleteCommit = (commentToDelete: string) => {
     const commentsWithoutDeletedOne = comments.filter(comment => {
       return comment !== commentToDelete;
     });
@@ -40,13 +57,9 @@ export const Post = ({ author, publishedAt, content}) => {
     setComments(commentsWithoutDeletedOne);
   };
 
-  const handleNewCommitInvalid = () => {
-    event.target.setCustomValidity("Esse campo é obrigatório");
-  };
-
   const isNewCommentEmpty = newCommitText.length === 0;
 
-  return(
+  return (
     <article className={Styles.post}>
       <header>
         <div className={Styles.author}>
@@ -58,9 +71,9 @@ export const Post = ({ author, publishedAt, content}) => {
           </div>
         </div>
 
-        <time title={publishedDateFormatted} dateTime={publishedAt}>
+        <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
           {publishedDateRelativaToNow}
-        </time> 
+        </time>
       </header>
 
       <div className={Styles.content}>
@@ -76,7 +89,7 @@ export const Post = ({ author, publishedAt, content}) => {
       <form onSubmit={handleCreateNewCommit} className={Styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
-        <textarea 
+        <textarea
           placeholder="Deixe um comentário"
           onChange={handleNewCommitChange}
           value={newCommitText}

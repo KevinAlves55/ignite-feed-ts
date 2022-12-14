@@ -5,7 +5,12 @@ import { Avatar } from "../Avatar/Avatar";
 
 import Style from "./Comment.module.css";
 
-export const Comment = ({ content, onDeleteCommit }) => {
+interface ICommentProps {
+  content: string;
+  onDeleteCommit: (content: string) => void;
+}
+
+export const Comment: React.FC<ICommentProps> = ({ content, onDeleteCommit }) => {
   const [likeCount, setLinkCount] = useState(0);
 
   const handleDeleteCommit = () => {
@@ -18,7 +23,7 @@ export const Comment = ({ content, onDeleteCommit }) => {
     });
   };
 
-  return(
+  return (
     <div className={Style.comment}>
       <Avatar hasBorder={false} src="https://avatars.githubusercontent.com/u/89947057?v=4" />
 
