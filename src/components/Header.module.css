@@ -1,0 +1,17 @@
+.headerFeed {
+  background-color: var(--gray-800);
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem 0;
+  gap: 1rem;
+}
+
+.headerFeed h1 {
+  font-size: 1.625rem;
+  color: var(--white);
+  font-weight: bold;
+}
+
+.headerFeed img {
+  height: 2rem
+}
